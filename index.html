@@ -336,9 +336,9 @@
     </div>
 
     <script>
-        // Cloudinary Configuration
-        const CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME';
-        const CLOUDINARY_UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET';
+        // Cloudinary Configuration - REPLACE WITH YOUR VALUES
+        const CLOUDINARY_CLOUD_NAME = 'dlq5xhxop'; // Change this!
+        const CLOUDINARY_UPLOAD_PRESET = 'vidhgnck'; // Change this!
         
         // Admin Credentials
         const ADMIN_USERNAME = 'admin';
@@ -354,6 +354,40 @@
         let isAdmin = false;
         let currentCategory = 'all';
 
+        // Sample designs for demonstration (remove when Cloudinary is configured)
+        const sampleDesigns = [
+            {
+                id: 'sample_1',
+                url: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=800',
+                downloadUrl: '#',
+                title: 'Minimalist Typography',
+                category: 'Typography',
+                tags: ['minimal', 'typography', 'black'],
+                downloads: 12,
+                date: new Date()
+            },
+            {
+                id: 'sample_2',
+                url: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800',
+                downloadUrl: '#',
+                title: 'Abstract Art',
+                category: 'Streetwear',
+                tags: ['abstract', 'art', 'colorful'],
+                downloads: 8,
+                date: new Date()
+            },
+            {
+                id: 'sample_3',
+                url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800',
+                downloadUrl: '#',
+                title: 'Geometric Pattern',
+                category: 'Cars',
+                tags: ['geometric', 'pattern', 'modern'],
+                downloads: 15,
+                date: new Date()
+            }
+        ];
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadDesigns();
@@ -367,12 +401,32 @@
                 
                 if (storedDesigns.length > 0) {
                     allDesigns = storedDesigns;
-                } else {
-                    // Fallback to Cloudinary API if LocalStorage is empty
-                    const response = await fetch(`https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/resources/image?type=upload&prefix=designs/`);
-                    const data = await response.json();
-                    
-                    allDesigns = (data.resources || []).map(resource => ({
+                    filteredDesigns = [...allDesigns];
+                    updateStats();
+                    renderTags();
+                    renderDesigns();
+                    renderPagination();
+                    return;
+                }
+                
+                // Check if Cloudinary is configured
+                if (CLOUDINARY_CLOUD_NAME === 'YOUR_CLOUD_NAME') {
+                    console.log('Cloudinary not configured. Using sample designs.');
+                    allDesigns = [...sampleDesigns];
+                    filteredDesigns = [...allDesigns];
+                    updateStats();
+                    renderTags();
+                    renderDesigns();
+                    renderPagination();
+                    return;
+                }
+                
+                // Try to fetch from Cloudinary
+                const response = await fetch(`https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/resources/image?type=upload&prefix=designs/`);
+                const data = await response.json();
+                
+                if (data.resources && data.resources.length > 0) {
+                    allDesigns = data.resources.map(resource => ({
                         id: resource.public_id,
                         url: resource.secure_url,
                         downloadUrl: resource.secure_url,
@@ -382,6 +436,8 @@
                         downloads: 0,
                         date: new Date(resource.created_at)
                     }));
+                } else {
+                    allDesigns = [...sampleDesigns];
                 }
                 
                 filteredDesigns = [...allDesigns];
@@ -391,7 +447,13 @@
                 renderPagination();
             } catch (error) {
                 console.error('Error loading designs:', error);
-                document.getElementById('designsGrid').innerHTML = '<div class="col-span-full text-center py-12 text-red-500">Error loading designs. Please refresh the page.</div>';
+                // Fallback to sample designs on error
+                allDesigns = [...sampleDesigns];
+                filteredDesigns = [...allDesigns];
+                updateStats();
+                renderTags();
+                renderDesigns();
+                renderPagination();
             }
         }
 
@@ -481,7 +543,7 @@
             const query = document.getElementById('searchInput').value.toLowerCase();
             currentPage = 1;
             if (query === '') { filterDesigns(currentCategory); return; }
-            filteredDesigns = allDesigns.filter(d => d.title.toLowerCase().includes(query) || d.tags.some(t => t.toLowerCase().includes(query)));
+            filteredDesigns = allDesigns.filter(d => d.title.toLowerCase().includes(query) || (d.tags && d.tags.some(t => t.toLowerCase().includes(query))));
             renderDesigns();
             renderPagination();
         }
@@ -495,7 +557,7 @@
             }
             document.getElementById('downloadModal').classList.remove('hidden');
             document.getElementById('downloadModal').classList.add('flex');
-            if (design && design.downloadUrl) {
+            if (design && design.downloadUrl && design.downloadUrl !== '#') {
                 const link = document.createElement('a');
                 link.href = design.downloadUrl;
                 link.download = `${design.title}.zip`;
@@ -510,7 +572,7 @@
 
         function updateStats() {
             document.getElementById('totalDesigns').textContent = allDesigns.length;
-            document.getElementById('totalDownloads').textContent = allDesigns.reduce((sum, d) => sum + d.downloads, 0);
+            document.getElementById('totalDownloads').textContent = allDesigns.reduce((sum, d) => sum + (d.downloads || 0), 0);
         }
 
         function renderTags() {
@@ -581,10 +643,15 @@
 
         function updateAdminStats() {
             document.getElementById('adminTotalDesigns').textContent = allDesigns.length;
-            document.getElementById('adminTotalDownloads').textContent = allDesigns.reduce((sum, d) => sum + d.downloads, 0);
+            document.getElementById('adminTotalDownloads').textContent = allDesigns.reduce((sum, d) => sum + (d.downloads || 0), 0);
         }
 
         async function uploadToCloudinary(file, isImage = true) {
+            if (CLOUDINARY_CLOUD_NAME === 'YOUR_CLOUD_NAME') {
+                alert('Please configure Cloudinary credentials first!');
+                throw new Error('Cloudinary not configured');
+            }
+            
             const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${isImage ? 'image' : 'raw'}/upload`;
             const formData = new FormData();
             formData.append('file', file);
@@ -654,7 +721,7 @@
                     <td class="px-6 py-4"><img src="${design.url}" class="w-12 h-12 rounded object-cover"></td>
                     <td class="px-6 py-4 font-medium text-stone-900">${design.title}</td>
                     <td class="px-6 py-4 text-sm text-stone-600">${design.category}</td>
-                    <td class="px-6 py-4 text-sm text-stone-600">${design.downloads}</td>
+                    <td class="px-6 py-4 text-sm text-stone-600">${design.downloads || 0}</td>
                     <td class="px-6 py-4 text-sm text-stone-500">${new Date(design.date).toLocaleDateString()}</td>
                     <td class="px-6 py-4"><button onclick="deleteDesign('${design.id}')" class="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button></td>
                 </tr>
