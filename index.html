@@ -1,762 +1,711 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DesignDrop — Free Graphics & Illustrations</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .serif { font-family: 'Playfair Display', serif; }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .design-card:hover .download-btn { opacity: 1; transform: translateY(0); }
-        
-        /* Ad Container Styles */
-        .ad-container {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-        .ad-container::before {
-            content: 'Advertisement';
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            font-size: 10px;
-            color: #999;
-            background: rgba(255,255,255,0.8);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .ad-vertical { min-height: 250px; width: 100%; }
-        .ad-horizontal { min-height: 90px; width: 100%; }
-        .ad-square { min-height: 250px; min-width: 250px; }
-        
-        /* Pagination Styles */
-        .pagination-btn { transition: all 0.3s ease; }
-        .pagination-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .pagination-btn.active { background: #1f2937; color: white; border-color: #1f2937; }
-        .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    </style>
+<meta charset="UTF-8">
+<meta name="monetag" content="5ff18a96fa4cdf723d84cd3e9869aeab">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesignDrop — Free Graphics & Illustrations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F9F8F6; --surface: #FFFFFF; --border: #E8E6E0;
+    --border-strong: #C8C5BC; --text-primary: #1A1916;
+    --text-secondary: #6B6860; --text-muted: #A09E99;
+    --accent: #1A1916; --accent-soft: #F0EEE8;
+    --tag-bg: #EDECEA; --tag-text: #4A4844;
+    --ad-bg: #F4F2ED; --danger: #C0392B;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--text-primary); letter-spacing: -0.5px; cursor: pointer; }
+  .logo span { color: var(--text-muted); }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-link { font-size: 13px; color: var(--text-secondary); cursor: pointer; text-decoration: none; transition: color 0.15s; }
+  .nav-link:hover { color: var(--text-primary); }
+  .btn-admin { font-size: 12px; font-weight: 500; padding: 6px 14px; border: 1px solid var(--border-strong); border-radius: 6px; background: transparent; color: var(--text-primary); cursor: pointer; transition: background 0.15s; }
+  .btn-admin:hover { background: var(--accent-soft); }
+
+  .hero { padding: 5rem 2rem 3.5rem; text-align: center; max-width: 700px; margin: 0 auto; }
+  .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: -1px; margin-bottom: 1rem; }
+  .hero h1 em { font-style: italic; color: var(--text-secondary); }
+  .hero p { font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; }
+  .search-wrap { display: flex; max-width: 480px; margin: 0 auto; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface); overflow: hidden; }
+  .search-wrap input { flex: 1; border: none; outline: none; padding: 0.75rem 1rem; font-size: 14px; font-family: 'Inter', sans-serif; background: transparent; color: var(--text-primary); }
+  .search-wrap input::placeholder { color: var(--text-muted); }
+  .btn-search { padding: 0.75rem 1.25rem; border: none; background: var(--accent); color: #fff; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+  .ad-banner { background: var(--ad-bg); border: 1px dashed var(--border-strong); border-radius: 10px; text-align: center; color: var(--text-muted); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; }
+  .ad-banner.leaderboard { max-width: 900px; margin: 0 auto 2.5rem; height: 90px; }
+  .ad-banner.sidebar { height: 250px; width: 100%; margin-bottom: 1.5rem; }
+  .ad-banner.footer-ad { max-width: 900px; margin: 3rem auto 0; height: 90px; }
+
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem 4rem; }
+  .content-with-sidebar { display: grid; grid-template-columns: 1fr 260px; gap: 2.5rem; align-items: start; }
+
+  .filters { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .filter-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.5rem; }
+  .filter-btn { font-size: 12px; font-family: 'Inter', sans-serif; padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .filter-btn:hover, .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .design-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
+  .design-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.15s, transform 0.15s; cursor: pointer; }
+  .design-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .card-thumb { height: 280px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+  .card-thumb img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+  .card-thumb .no-img { font-size: 2rem; color: var(--text-muted); }
+  .card-overlay { position: absolute; inset: 0; background: rgba(26,25,22,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+  .design-card:hover .card-overlay { opacity: 1; }
+  .btn-preview { background: #fff; color: var(--text-primary); border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .card-body { padding: 0.85rem 1rem; }
+  .card-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .card-tag { font-size: 11px; background: var(--tag-bg); color: var(--tag-text); padding: 2px 8px; border-radius: 20px; }
+  .card-dl-count { font-size: 11px; color: var(--text-muted); }
+
+  .sidebar { position: sticky; top: 80px; }
+  .sidebar-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sidebar-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.85rem; }
+  .stat-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row span:last-child { font-weight: 500; }
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cloud-tag { font-size: 12px; background: var(--tag-bg); color: var(--tag-text); padding: 3px 10px; border-radius: 20px; cursor: pointer; }
+  .cloud-tag:hover { background: var(--border-strong); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(26,25,22,0.6); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 16px; max-width: 560px; width: 100%; overflow: hidden; }
+  .modal-img { height: 380px; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .modal-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .modal-img .no-img { font-size: 3rem; color: var(--text-muted); }
+  .modal-body { padding: 1.5rem; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .modal-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.6; }
+  .modal-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .modal-meta { font-size: 12px; color: var(--text-muted); }
+  .btn-dl { background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s; }
+  .btn-dl:hover { opacity: 0.85; }
+  .btn-close-modal { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .modal-inner { position: relative; }
+
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+  .empty-state p { margin-top: 0.5rem; font-size: 14px; }
+  .loading-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-size: 14px; }
+  .spinner { display: inline-block; width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--text-primary); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 1rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ADMIN */
+  .admin-wrap { max-width: 920px; margin: 0 auto; padding: 2rem; }
+  .admin-tabs { display: flex; gap: 0.25rem; background: var(--accent-soft); padding: 4px; border-radius: 8px; margin-bottom: 2rem; }
+  .admin-tab { flex: 1; text-align: center; padding: 7px 16px; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; transition: all 0.15s; color: var(--text-secondary); border: none; background: transparent; font-family: 'Inter', sans-serif; }
+  .admin-tab.active { background: var(--surface); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+  .upload-form { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1/-1; }
+  .form-group label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
+  .form-group input, .form-group textarea, .form-group select { font-family: 'Inter', sans-serif; font-size: 14px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text-primary); outline: none; transition: border-color 0.15s; resize: vertical; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--border-strong); }
+
+  .drop-zone { border: 2px dashed var(--border-strong); border-radius: 10px; padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--bg); }
+  .drop-zone:hover { border-color: var(--text-primary); background: var(--accent-soft); }
+  .drop-zone p { font-size: 13px; color: var(--text-secondary); margin-top: 0.5rem; }
+  .drop-zone .dz-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .preview-thumb { width: 100%; max-height: 160px; object-fit: contain; border-radius: 6px; margin-top: 0.75rem; display: none; }
+
+  .progress-wrap { background: var(--border); border-radius: 4px; height: 6px; margin-top: 1rem; display: none; }
+  .progress-bar { background: var(--accent); height: 6px; border-radius: 4px; width: 0%; transition: width 0.3s; }
+  .upload-status { font-size: 12px; color: var(--text-secondary); margin-top: 6px; min-height: 18px; }
+
+  .btn-submit { background: var(--accent); color: #fff; border: none; padding: 11px 28px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; margin-top: 1rem; transition: opacity 0.15s; }
+  .btn-submit:hover { opacity: 0.85; }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .btn-danger:hover { background: #fef2f2; }
+
+  .manage-table { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .manage-table table { width: 100%; border-collapse: collapse; }
+  .manage-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .manage-table td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .manage-table tr:last-child td { border-bottom: none; }
+  .manage-table img.thumb-sm { width: 48px; height: 36px; object-fit: cover; border-radius: 4px; }
+  .thumb-sm-box { width: 48px; height: 36px; border-radius: 4px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .stat-card .s-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-card .s-value { font-size: 1.8rem; font-weight: 600; margin-top: 4px; }
+
+  .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+  .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 380px; text-align: center; }
+  .login-card h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .login-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.5rem; }
+  .login-input { width: 100%; font-family: 'Inter', sans-serif; font-size: 14px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text-primary); outline: none; margin-bottom: 0.75rem; }
+  .btn-login { width: 100%; background: var(--accent); color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .login-error { font-size: 12px; color: var(--danger); margin-top: 0.5rem; display: none; }
+
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--text-primary); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; z-index: 999; transform: translateY(100px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; font-size: 12px; color: var(--text-muted); background: var(--surface); }
+
+  @media (max-width: 768px) {
+    .content-with-sidebar { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .form-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
 </head>
-<body class="bg-stone-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white border-b border-stone-200 sticky top-0 z-40">
-        <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="serif text-2xl font-bold text-stone-900">Design<span class="font-normal">Drop</span></h1>
-            <nav class="flex gap-4 items-center">
-                <button onclick="scrollToGallery()" class="text-stone-600 hover:text-stone-900 transition-colors text-sm font-medium">Browse</button>
-                <button onclick="openLoginModal()" class="text-stone-400 hover:text-stone-600 transition-colors" title="Admin Login">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </button>
-            </nav>
+<body>
+
+<!-- ══ PUBLIC SITE ══ -->
+<div id="view-public" class="view active">
+  <nav>
+    <div class="logo" onclick="goHome()">Design<span>Drop</span></div>
+    <div class="nav-right">
+      <span class="nav-link" onclick="scrollToGallery()">Browse</span>
+
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Free graphics &amp;<br><em>illustrations</em> for everyone</h1>
+    <p>Download high-quality design assets at no cost — forever free.</p>
+    <div class="search-wrap">
+      <input type="text" id="search-input" placeholder="Search illustrations, graphics…" oninput="filterDesigns()">
+      <button class="btn-search">Search</button>
+    </div>
+  </section>
+
+  <div class="page-wrap" style="padding-bottom:0;">
+    <div style="text-align:center;margin:0 auto 2.5rem;max-width:900px;">
+      <script>
+        atOptions = {
+          'key' : '59bfbc812ec5ff326c8a403d7c4fe7e3',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/59bfbc812ec5ff326c8a403d7c4fe7e3/invoke.js"></script>
+    </div>
+  </div>
+
+  <div id="gallery-anchor" class="page-wrap">
+    <div class="content-with-sidebar">
+      <div>
+        <div class="filters">
+          <span class="filter-label">Filter:</span>
+          <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+          <button class="filter-btn" onclick="setFilter('Cars',this)">Cars</button>
+          <button class="filter-btn" onclick="setFilter('Anime',this)">Anime</button>
+          <button class="filter-btn" onclick="setFilter('Typography',this)">Typography</button>
+          <button class="filter-btn" onclick="setFilter('Streetwear',this)">Streetwear</button>
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="bg-white border-b border-stone-200 py-16 md:py-20">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <h2 class="serif text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 mb-4 leading-tight">
-                Free graphics &<br/>illustrations for everyone
-            </h2>
-            <p class="text-lg text-stone-600 mb-8 max-w-2xl mx-auto">
-                Download high-quality design assets at no cost — forever free.
-            </p>
+        <div id="design-grid" class="design-grid"></div>
+        <div id="loading-state" class="loading-state"><div class="spinner"></div><br>Loading designs…</div>
+        <div id="empty-state" class="empty-state" style="display:none;"><div style="font-size:2rem;">🔍</div><p>No designs found.</p></div>
+      </div>
+      <aside class="sidebar">
+        <div style="text-align:center;margin-bottom:1.5rem;">
+          <script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="445256"></script>
         </div>
-    </section>
-
-    <!-- Main Content -->
-    <main id="gallery" class="max-w-[1600px] mx-auto px-6 py-12">
-        <!-- Top Ad Banner -->
-        <div class="mb-8">
-            <div class="ad-container ad-horizontal mx-auto max-w-4xl">
-                <div class="text-center p-4">
-                    <p class="text-gray-600 font-medium">Your Ad Here - Top Banner</p>
-                    <p class="text-gray-500 text-sm mt-1">728x90 or responsive</p>
-                </div>
-            </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Stats</div>
+          <div class="stat-row"><span>Total designs</span><span id="sb-total">—</span></div>
+          <div class="stat-row"><span>Downloads</span><span id="sb-downloads">—</span></div>
+          <div class="stat-row"><span>Categories</span><span>4</span></div>
         </div>
-
-        <!-- Search & Filter -->
-        <div class="flex flex-col md:flex-row gap-4 mb-8 items-center justify-between">
-            <div class="flex gap-2 flex-wrap justify-center md:justify-start">
-                <button onclick="filterDesigns('all')" class="filter-btn active bg-stone-900 text-white border-stone-900 px-4 py-2 rounded-full border text-sm font-medium transition-all hover:border-stone-800" data-category="all">All</button>
-                <button onclick="filterDesigns('Cars')" class="filter-btn px-4 py-2 rounded-full border border-stone-300 text-sm font-medium transition-all hover:border-stone-800 hover:bg-stone-100" data-category="Cars">Cars</button>
-                <button onclick="filterDesigns('Anime')" class="filter-btn px-4 py-2 rounded-full border border-stone-300 text-sm font-medium transition-all hover:border-stone-800 hover:bg-stone-100" data-category="Anime">Anime</button>
-                <button onclick="filterDesigns('Typography')" class="filter-btn px-4 py-2 rounded-full border border-stone-300 text-sm font-medium transition-all hover:border-stone-800 hover:bg-stone-100" data-category="Typography">Typography</button>
-                <button onclick="filterDesigns('Streetwear')" class="filter-btn px-4 py-2 rounded-full border border-stone-300 text-sm font-medium transition-all hover:border-stone-800 hover:bg-stone-100" data-category="Streetwear">Streetwear</button>
-            </div>
-            <div class="relative">
-                <input type="text" id="searchInput" placeholder="Search designs…" class="pl-10 pr-4 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:border-stone-800 w-64" oninput="searchDesigns()">
-                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Popular tags</div>
+          <div class="tag-cloud" id="tag-cloud"></div>
         </div>
-
-        <!-- Content Grid with Left Sidebar -->
-        <div class="grid grid-cols-1 lg:grid-cols-[200px_1fr_300px] gap-6">
-            <!-- Left Sidebar - Ads -->
-            <aside class="hidden lg:block space-y-6">
-                <div class="ad-container ad-vertical sticky top-24">
-                    <div class="text-center p-4">
-                        <p class="text-gray-600 font-medium">Your Ad Here</p>
-                        <p class="text-gray-500 text-sm mt-1">Left Sidebar</p>
-                    </div>
-                </div>
-                <div class="ad-container ad-square">
-                    <div class="text-center p-4">
-                        <p class="text-gray-600 font-medium">Ad Space</p>
-                        <p class="text-gray-500 text-sm mt-1">250x250</p>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Designs Grid -->
-            <div>
-                <div id="designsGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-                    <div class="col-span-full text-center py-12 text-stone-500">Loading designs…</div>
-                </div>
-
-                <!-- Pagination Controls -->
-                <div id="pagination" class="flex justify-center items-center gap-2 mb-8"></div>
-            </div>
-
-            <!-- Right Sidebar - Stats & Ads -->
-            <aside class="space-y-6">
-                <div class="bg-white rounded-xl border border-stone-200 p-6">
-                    <h3 class="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-4">Stats</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-sm"><span class="text-stone-600">Total designs</span><span class="font-semibold text-stone-900" id="totalDesigns">—</span></div>
-                        <div class="flex justify-between text-sm"><span class="text-stone-600">Downloads</span><span class="font-semibold text-stone-900" id="totalDownloads">—</span></div>
-                        <div class="flex justify-between text-sm"><span class="text-stone-600">Categories</span><span class="font-semibold text-stone-900">4</span></div>
-                    </div>
-                </div>
-
-                <div class="ad-container ad-square">
-                    <div class="text-center p-4">
-                        <p class="text-gray-600 font-medium">Your Ad Here</p>
-                        <p class="text-gray-500 text-sm mt-1">Right Sidebar Top</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl border border-stone-200 p-6">
-                    <h3 class="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-4">Popular tags</h3>
-                    <div id="tagsContainer" class="flex flex-wrap gap-2">
-                        <div class="text-sm text-stone-500">Loading…</div>
-                    </div>
-                </div>
-
-                <div class="ad-container ad-vertical">
-                    <div class="text-center p-4">
-                        <p class="text-gray-600 font-medium">Your Ad Here</p>
-                        <p class="text-gray-500 text-sm mt-1">Right Sidebar Bottom</p>
-                    </div>
-                </div>
-            </aside>
+        <div style="text-align:center;margin-bottom:1.5rem;">
+          <script>
+            atOptions = {
+              'key' : '70d6e1e47b3eb1c091487469dc9f6c21',
+              'format' : 'iframe',
+              'height' : 250,
+              'width' : 300,
+              'params' : {}
+            };
+          </script>
+          <script src="https://www.highperformanceformat.com/70d6e1e47b3eb1c091487469dc9f6c21/invoke.js"></script>
         </div>
+      </aside>
+    </div>
+    <div style="text-align:center;margin:3rem auto 0;max-width:900px;">
+      <script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="230109"></script>
+    </div>
+  </div>
+  <footer>&copy; 2025 DesignDrop — Free Graphics &amp; Illustrations</footer>
+</div>
 
-        <!-- Bottom Ad Banner -->
-        <div class="mt-12 mb-8">
-            <div class="ad-container ad-horizontal mx-auto max-w-4xl">
-                <div class="text-center p-4">
-                    <p class="text-gray-600 font-medium">Your Ad Here - Bottom Banner</p>
-                    <p class="text-gray-500 text-sm mt-1">728x90 or responsive</p>
-                </div>
-            </div>
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-inner">
+      <button class="btn-close-modal" onclick="closeModalDirect()">✕</button>
+      <div class="modal-img" id="modal-img-wrap"></div>
+      <div class="modal-body">
+        <h2 class="modal-title" id="modal-title"></h2>
+        <p class="modal-desc" id="modal-desc"></p>
+        <div class="modal-tags" id="modal-tags"></div>
+        <div class="modal-footer">
+          <div class="modal-meta" id="modal-meta"></div>
+          <button class="btn-dl" onclick="downloadDesign()">⬇ Free Download</button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <!-- Additional Bottom Ads Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 mb-12">
-            <div class="ad-container ad-square">
-                <div class="text-center p-4"><p class="text-gray-600 font-medium">Ad Space 1</p></div>
-            </div>
-            <div class="ad-container ad-square">
-                <div class="text-center p-4"><p class="text-gray-600 font-medium">Ad Space 2</p></div>
-            </div>
-            <div class="ad-container ad-square">
-                <div class="text-center p-4"><p class="text-gray-600 font-medium">Ad Space 3</p></div>
-            </div>
-        </div>
-    </main>
+<!-- ══ ADMIN LOGIN ══ -->
+<div id="view-login" class="view">
+  <div class="login-screen">
+    <div class="login-card">
+      <div style="font-size:2rem;margin-bottom:0.75rem;">🔐</div>
+      <h2>Admin Login</h2>
+      <p>Enter your credentials to manage designs.</p>
+      <input type="text" class="login-input" placeholder="Username" id="login-user">
+      <input type="password" class="login-input" placeholder="Password" id="login-pass" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn-login" onclick="doLogin()">Sign In</button>
+      <div class="login-error" id="login-error">Incorrect credentials. Try again.</div>
+      <p style="margin-top:1rem;"><span class="nav-link" onclick="showPublic()">← Back to site</span></p>
+    </div>
+  </div>
+</div>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-stone-200 py-8 mt-12">
-        <div class="max-w-4xl mx-auto px-6 text-center text-sm text-stone-500">
-            <p>&copy; 2025 DesignDrop — Free Graphics & Illustrations</p>
-        </div>
-    </footer>
-
-    <!-- Download Modal -->
-    <div id="downloadModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-6">
-        <div class="bg-white rounded-2xl max-w-md w-full p-8 text-center fade-in">
-            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            </div>
-            <h3 class="serif text-2xl font-bold text-stone-900 mb-2">⬇ Free Download</h3>
-            <p class="text-stone-600 mb-6 text-sm">Thank you for using DesignDrop. Your download will start shortly.</p>
-            <button onclick="closeDownloadModal()" class="w-full bg-stone-900 text-white py-3 rounded-lg font-medium hover:bg-stone-800 transition-colors">Close</button>
-        </div>
+<!-- ══ ADMIN PANEL ══ -->
+<div id="view-admin" class="view">
+  <nav>
+    <div class="logo">Design<span>Drop</span> <span style="font-size:12px;font-family:Inter;color:var(--text-muted);font-weight:400;">/ Admin</span></div>
+    <div class="nav-right">
+      <span class="nav-link" onclick="showPublic()">← View site</span>
+      <button class="btn-admin" onclick="logout()">Log out</button>
+    </div>
+  </nav>
+  <div class="admin-wrap">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="s-label">Total Designs</div><div class="s-value" id="adm-total">—</div></div>
+      <div class="stat-card"><div class="s-label">Total Downloads</div><div class="s-value" id="adm-dls">—</div></div>
+      <div class="stat-card"><div class="s-label">Storage</div><div class="s-value" style="font-size:1rem;padding-top:6px;">Cloudinary ✓</div></div>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('upload',this)">Upload New Design</button>
+      <button class="admin-tab" onclick="switchAdminTab('manage',this)">Manage Designs</button>
     </div>
 
-    <!-- Admin Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-6">
-        <div class="bg-white rounded-2xl max-w-md w-full p-8 fade-in">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h3 class="serif text-2xl font-bold text-stone-900">🔐 Admin Login</h3>
-                    <p class="text-stone-600 text-sm mt-1">Enter your credentials to manage designs.</p>
-                </div>
-                <button onclick="closeLoginModal()" class="text-stone-400 hover:text-stone-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-stone-700 mb-2">Username</label>
-                    <input type="text" id="username" class="w-full px-4 py-3 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-800" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-stone-700 mb-2">Password</label>
-                    <input type="password" id="password" class="w-full px-4 py-3 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-800" required>
-                </div>
-                <div id="loginError" class="text-red-600 text-sm hidden">Incorrect credentials. Try again.</div>
-                <button type="submit" class="w-full bg-stone-900 text-white py-3 rounded-lg font-medium hover:bg-stone-800 transition-colors">Sign In</button>
-                <button type="button" onclick="closeLoginModal()" class="w-full text-stone-500 py-2 text-sm hover:text-stone-700">← Back to site</button>
-            </form>
+    <div id="tab-upload">
+      <div class="upload-form">
+        <div class="form-group full" style="margin-bottom:1.25rem;">
+          <label>Preview Image * (JPG, PNG, SVG)</label>
+          <div class="drop-zone" onclick="document.getElementById('img-input').click()">
+            <div class="dz-icon">🖼</div>
+            <strong>Click to choose preview image</strong>
+            <p>This is the thumbnail visitors will see in the gallery</p>
+            <img class="preview-thumb" id="preview-thumb" alt="Preview">
+          </div>
+          <input type="file" id="img-input" accept="image/*" style="display:none" onchange="previewImage(this)">
         </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Design Title *</label>
+            <input type="text" id="f-title" placeholder="e.g. Abstract Wave Set">
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="f-cat">
+              <option value="Cars">Cars</option>
+              <option value="Anime">Anime</option>
+              <option value="Typography">Typography</option>
+              <option value="Streetwear">Streetwear</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Description</label>
+            <textarea id="f-desc" rows="3" placeholder="Describe this design asset…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Tags (comma-separated)</label>
+            <input type="text" id="f-tags" placeholder="vector, colorful, nature">
+          </div>
+          <div class="form-group">
+            <label>Download File * (ZIP, PDF, AI, PNG…)</label>
+            <input type="file" id="f-file">
+          </div>
+        </div>
+        <div class="progress-wrap" id="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+        <div class="upload-status" id="upload-status"></div>
+        <button class="btn-submit" id="btn-publish" onclick="uploadDesign()">Publish Design ↗</button>
+      </div>
     </div>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="fixed inset-0 bg-stone-50 z-50 hidden overflow-y-auto">
-        <div class="bg-white border-b border-stone-200 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-            <div class="flex items-center gap-4">
-                <h1 class="serif text-xl font-bold text-stone-900">Design Drop <span class="text-stone-400 font-normal">/ Admin</span></h1>
-                <button onclick="closeAdminPanel()" class="text-sm text-stone-600 hover:text-stone-900">← View site</button>
-            </div>
-            <button onclick="logoutAdmin()" class="text-sm text-red-600 hover:text-red-800 font-medium">Log out</button>
-        </div>
-
-        <div class="max-w-6xl mx-auto px-6 py-8">
-            <!-- Admin Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-xl border border-stone-200">
-                    <p class="text-xs text-stone-400 uppercase font-semibold">Total Designs</p>
-                    <p class="text-3xl font-bold text-stone-900 mt-2" id="adminTotalDesigns">—</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-stone-200">
-                    <p class="text-xs text-stone-400 uppercase font-semibold">Total Downloads</p>
-                    <p class="text-3xl font-bold text-stone-900 mt-2" id="adminTotalDownloads">—</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-stone-200">
-                    <p class="text-xs text-stone-400 uppercase font-semibold">Storage</p>
-                    <p class="text-3xl font-bold text-stone-900 mt-2">Cloudinary <span class="text-green-500 text-sm">✓</span></p>
-                </div>
-            </div>
-
-            <!-- Tabs -->
-            <div class="flex gap-4 mb-6 border-b border-stone-200">
-                <button onclick="switchAdminTab('upload')" id="tabUpload" class="pb-3 px-2 text-sm font-medium border-b-2 border-stone-900 text-stone-900">Upload New Design</button>
-                <button onclick="switchAdminTab('manage')" id="tabManage" class="pb-3 px-2 text-sm font-medium border-b-2 border-transparent text-stone-500 hover:text-stone-900">Manage Designs</button>
-            </div>
-
-            <!-- Upload Form -->
-            <div id="uploadSection" class="bg-white p-8 rounded-xl border border-stone-200">
-                <h2 class="text-lg font-bold mb-6 text-stone-900">Upload New Design</h2>
-                <form onsubmit="handleUpload(event)" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-stone-700 mb-2">Preview Image * (JPG, PNG, SVG)</label>
-                            <div class="border-2 border-dashed border-stone-300 rounded-lg p-6 text-center hover:border-stone-500 transition-colors cursor-pointer" onclick="document.getElementById('previewImage').click()">
-                                <p class="text-stone-500 text-sm">🖼 Click to choose preview image</p>
-                                <p class="text-stone-400 text-xs mt-1">This is the thumbnail visitors will see in the gallery</p>
-                                <input type="file" id="previewImage" accept="image/*" class="hidden" required>
-                            </div>
-                            <img id="previewThumb" class="mt-4 max-h-32 hidden rounded-lg border border-stone-200">
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-stone-700 mb-2">Design Title *</label>
-                                <input type="text" id="designTitle" class="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-800" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-stone-700 mb-2">Category *</label>
-                                <select id="designCategory" class="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-800" required>
-                                    <option value="Cars">Cars</option>
-                                    <option value="Anime">Anime</option>
-                                    <option value="Typography">Typography</option>
-                                    <option value="Streetwear">Streetwear</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-stone-700 mb-2">Description</label>
-                                <textarea id="designDescription" rows="3" class="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-800"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-stone-700 mb-2">Tags (comma-separated)</label>
-                                <input type="text" id="designTags" class="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-800" placeholder="e.g. red, fast, jdm">
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-2">Download File * (ZIP, PDF, AI, PNG…)</label>
-                        <input type="file" id="downloadFile" class="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-800" required>
-                    </div>
-                    <button type="submit" id="publishBtn" class="w-full bg-stone-900 text-white py-3 rounded-lg font-medium hover:bg-stone-800 transition-colors flex items-center justify-center gap-2">
-                        Publish Design <span>↗</span>
-                    </button>
-                </form>
-            </div>
-
-            <!-- Manage Designs -->
-            <div id="manageSection" class="hidden bg-white rounded-xl border border-stone-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-stone-50 border-b border-stone-200">
-                            <tr>
-                                <th class="px-6 py-4 text-xs font-semibold text-stone-500 uppercase">Preview</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-stone-500 uppercase">Title</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-stone-500 uppercase">Category</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-stone-500 uppercase">Downloads</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-stone-500 uppercase">Date</th>
-                                <th class="px-6 py-4 text-xs font-semibold text-stone-500 uppercase">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminDesignsTable" class="divide-y divide-stone-100">
-                            <tr><td colspan="6" class="px-6 py-8 text-center text-stone-500">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div id="tab-manage" style="display:none;">
+      <div class="manage-table">
+        <table>
+          <thead>
+            <tr><th>Preview</th><th>Title</th><th>Category</th><th>Downloads</th><th>Date</th><th>Action</th></tr>
+          </thead>
+          <tbody id="manage-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
+</div>
 
-    <script>
-        // Cloudinary Configuration - REPLACE WITH YOUR VALUES
-        const CLOUDINARY_CLOUD_NAME = 'dlq5xhxop'; // Change this!
-        const CLOUDINARY_UPLOAD_PRESET = 'vidhgnck'; // Change this!
-        
-        // Admin Credentials
-        const ADMIN_USERNAME = 'admin';
-        const ADMIN_PASSWORD = 'DesignDrop2025!';
+<div class="toast" id="toast"></div>
 
-        // Pagination
-        let currentPage = 1;
-        const designsPerPage = 30;
-        let allDesigns = [];
-        let filteredDesigns = [];
+<script type="module">
+// ══ CONFIG ══
+const CLOUDINARY_CLOUD = 'dlq5xhxop';
+const CLOUDINARY_PRESET = 'vidhgnck';
+const ADMIN_USER = 'jihed lajili';
+const ADMIN_PASS = 'Jo248.';
 
-        // State
-        let isAdmin = false;
-        let currentCategory = 'all';
+// ══ FIREBASE ══
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Sample designs for demonstration (remove when Cloudinary is configured)
-        const sampleDesigns = [
-            {
-                id: 'sample_1',
-                url: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=800',
-                downloadUrl: '#',
-                title: 'Minimalist Typography',
-                category: 'Typography',
-                tags: ['minimal', 'typography', 'black'],
-                downloads: 12,
-                date: new Date()
-            },
-            {
-                id: 'sample_2',
-                url: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800',
-                downloadUrl: '#',
-                title: 'Abstract Art',
-                category: 'Streetwear',
-                tags: ['abstract', 'art', 'colorful'],
-                downloads: 8,
-                date: new Date()
-            },
-            {
-                id: 'sample_3',
-                url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800',
-                downloadUrl: '#',
-                title: 'Geometric Pattern',
-                category: 'Cars',
-                tags: ['geometric', 'pattern', 'modern'],
-                downloads: 15,
-                date: new Date()
-            }
-        ];
+const app = initializeApp({
+  apiKey: "AIzaSyBsLrJMAUdXmcXuzytbxKIexiGG6yscpaM",
+  authDomain: "designdrop-97fd8.firebaseapp.com",
+  projectId: "designdrop-97fd8",
+  messagingSenderId: "66176019365",
+  appId: "1:66176019365:web:dc5bec5a7bac497767d64c"
+});
+const db = getFirestore(app);
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadDesigns();
-            checkAdminSession();
-        });
+const EMOJIS = { illustration:'🎨', graphic:'✏️', icon:'⚡', abstract:'🌀' };
+let allDesigns = [];
+let currentDesign = null;
+let currentFilter = 'all';
 
-        async function loadDesigns() {
-            try {
-                // Try loading from LocalStorage first (for admin uploads)
-                let storedDesigns = JSON.parse(localStorage.getItem('designdrop_designs') || '[]');
-                
-                if (storedDesigns.length > 0) {
-                    allDesigns = storedDesigns;
-                    filteredDesigns = [...allDesigns];
-                    updateStats();
-                    renderTags();
-                    renderDesigns();
-                    renderPagination();
-                    return;
-                }
-                
-                // Check if Cloudinary is configured
-                if (CLOUDINARY_CLOUD_NAME === 'YOUR_CLOUD_NAME') {
-                    console.log('Cloudinary not configured. Using sample designs.');
-                    allDesigns = [...sampleDesigns];
-                    filteredDesigns = [...allDesigns];
-                    updateStats();
-                    renderTags();
-                    renderDesigns();
-                    renderPagination();
-                    return;
-                }
-                
-                // Try to fetch from Cloudinary
-                const response = await fetch(`https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/resources/image?type=upload&prefix=designs/`);
-                const data = await response.json();
-                
-                if (data.resources && data.resources.length > 0) {
-                    allDesigns = data.resources.map(resource => ({
-                        id: resource.public_id,
-                        url: resource.secure_url,
-                        downloadUrl: resource.secure_url,
-                        title: extractTitle(resource.public_id),
-                        category: extractCategory(resource.public_id),
-                        tags: extractTags(resource.tags),
-                        downloads: 0,
-                        date: new Date(resource.created_at)
-                    }));
-                } else {
-                    allDesigns = [...sampleDesigns];
-                }
-                
-                filteredDesigns = [...allDesigns];
-                updateStats();
-                renderTags();
-                renderDesigns();
-                renderPagination();
-            } catch (error) {
-                console.error('Error loading designs:', error);
-                // Fallback to sample designs on error
-                allDesigns = [...sampleDesigns];
-                filteredDesigns = [...allDesigns];
-                updateStats();
-                renderTags();
-                renderDesigns();
-                renderPagination();
-            }
-        }
+// ══ CLOUDINARY UPLOAD ══
+async function cloudinaryUpload(file, folder, onProgress) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  fd.append('folder', folder);
 
-        function renderDesigns() {
-            const grid = document.getElementById('designsGrid');
-            const startIndex = (currentPage - 1) * designsPerPage;
-            const endIndex = startIndex + designsPerPage;
-            const designsToShow = filteredDesigns.slice(startIndex, endIndex);
-            
-            if (designsToShow.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-12 text-stone-500">No designs found.</div>';
-                return;
-            }
-            
-            grid.innerHTML = designsToShow.map(design => `
-                <div class="design-card bg-white rounded-xl border border-stone-200 overflow-hidden group fade-in">
-                    <div class="relative aspect-square overflow-hidden bg-stone-100">
-                        <img src="${design.url}" alt="${design.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <button onclick="downloadDesign('${design.id}')" class="download-btn absolute bottom-4 right-4 bg-stone-900 text-white px-4 py-2 rounded-lg text-sm font-medium opacity-0 transform translate-y-2 transition-all duration-300 hover:bg-stone-800">Download</button>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-semibold text-stone-900 mb-2">${design.title}</h3>
-                        <div class="flex items-center justify-between text-xs text-stone-500">
-                            <span class="px-2 py-1 bg-stone-100 rounded-full">${design.category}</span>
-                            <span>${design.downloads} ↓</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`);
+    xhr.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded / e.total); };
+    xhr.onload = () => {
+      if (xhr.status === 200) resolve(JSON.parse(xhr.responseText));
+      else reject(new Error('Upload failed: ' + xhr.responseText));
+    };
+    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.send(fd);
+  });
+}
 
-        function renderPagination() {
-            const pagination = document.getElementById('pagination');
-            const totalPages = Math.ceil(filteredDesigns.length / designsPerPage);
-            
-            if (totalPages <= 1) { pagination.innerHTML = ''; return; }
-            
-            let buttons = `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="pagination-btn px-4 py-2 border border-stone-300 rounded-lg text-sm font-medium">← Prev</button>`;
-            
-            const maxVisiblePages = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-            if (endPage - startPage < maxVisiblePages - 1) startPage = Math.max(1, endPage - maxVisiblePages + 1);
-            
-            if (startPage > 1) {
-                buttons += `<button onclick="changePage(1)" class="pagination-btn px-4 py-2 border border-stone-300 rounded-lg text-sm font-medium">1</button>`;
-                if (startPage > 2) buttons += `<span class="px-2 text-stone-400">...</span>`;
-            }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                buttons += `<button onclick="changePage(${i})" class="pagination-btn px-4 py-2 border rounded-lg text-sm font-medium ${i === currentPage ? 'active' : 'border-stone-300'}">${i}</button>`;
-            }
-            
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) buttons += `<span class="px-2 text-stone-400">...</span>`;
-                buttons += `<button onclick="changePage(${totalPages})" class="pagination-btn px-4 py-2 border border-stone-300 rounded-lg text-sm font-medium">${totalPages}</button>`;
-            }
-            
-            buttons += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="pagination-btn px-4 py-2 border border-stone-300 rounded-lg text-sm font-medium">Next →</button>`;
-            pagination.innerHTML = buttons;
-        }
+// ══ VIEWS ══
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+window.showPublic = () => { showView('view-public'); loadDesigns(); };
+window.showAdminLogin = () => showView('view-login');
+window.goHome = () => { showView('view-public'); loadDesigns(); };
+window.scrollToGallery = () => document.getElementById('gallery-anchor').scrollIntoView({ behavior:'smooth' });
+window.logout = () => showView('view-public');
 
-        function changePage(page) {
-            const totalPages = Math.ceil(filteredDesigns.length / designsPerPage);
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            renderDesigns();
-            renderPagination();
-            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
-        }
+// ══ AUTH ══
+window.doLogin = () => {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('login-error').style.display = 'none';
+    showView('view-admin');
+    refreshAdmin();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+};
 
-        function filterDesigns(category) {
-            currentCategory = category;
-            currentPage = 1;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-stone-900', 'text-white', 'border-stone-900');
-                if (btn.dataset.category === category) btn.classList.add('active', 'bg-stone-900', 'text-white', 'border-stone-900');
-            });
-            filteredDesigns = category === 'all' ? [...allDesigns] : allDesigns.filter(d => d.category === category);
-            renderDesigns();
-            renderPagination();
-        }
+// ══ LOAD FROM FIRESTORE ══
+async function loadDesigns() {
+  document.getElementById('loading-state').style.display = 'block';
+  document.getElementById('design-grid').innerHTML = '';
+  document.getElementById('empty-state').style.display = 'none';
+  try {
+    const q = query(collection(db, 'designs'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    allDesigns = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('loading-state').style.display = 'none';
+    renderGrid();
+    updateSidebar();
+  } catch(e) {
+    document.getElementById('loading-state').innerHTML = `<p style="color:var(--danger)">Failed to load designs. Make sure Firestore rules are published.<br><small>${e.message}</small></p>`;
+  }
+}
 
-        function searchDesigns() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            currentPage = 1;
-            if (query === '') { filterDesigns(currentCategory); return; }
-            filteredDesigns = allDesigns.filter(d => d.title.toLowerCase().includes(query) || (d.tags && d.tags.some(t => t.toLowerCase().includes(query))));
-            renderDesigns();
-            renderPagination();
-        }
+// ══ GALLERY ══
+function renderGrid() {
+  const search = (document.getElementById('search-input').value || '').toLowerCase();
+  const filtered = allDesigns.filter(d => {
+    const matchCat = currentFilter === 'all' || d.category === currentFilter;
+    const matchSearch = !search || d.title.toLowerCase().includes(search) ||
+      (d.desc||'').toLowerCase().includes(search) ||
+      (d.tags||[]).some(t => t.toLowerCase().includes(search));
+    return matchCat && matchSearch;
+  });
+  const grid = document.getElementById('design-grid');
+  const empty = document.getElementById('empty-state');
+  if (!filtered.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = filtered.map(d => `
+    <div class="design-card" data-id="${d.id}" style="cursor:pointer">
+      <div class="card-thumb">
+        ${d.imageUrl ? `<img src="${d.imageUrl}" alt="${d.title}" loading="lazy">` : `<span class="no-img">${EMOJIS[d.category]||'🎨'}</span>`}
+        <div class="card-overlay"><button class="btn-preview">Preview</button></div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${d.title}</div>
+        <div class="card-meta">
+          <span class="card-tag">${d.category}</span>
+          <span class="card-dl-count">⬇ ${d.downloads||0}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.querySelectorAll('.design-card[data-id]').forEach(card => {
+    card.addEventListener('click', () => openModal(card.getAttribute('data-id')));
+  });
+}
 
-        function downloadDesign(id) {
-            const design = allDesigns.find(d => d.id === id);
-            if (design) {
-                design.downloads++;
-                updateStats();
-                saveToLocalStorage();
-            }
-            document.getElementById('downloadModal').classList.remove('hidden');
-            document.getElementById('downloadModal').classList.add('flex');
-            if (design && design.downloadUrl && design.downloadUrl !== '#') {
-                const link = document.createElement('a');
-                link.href = design.downloadUrl;
-                link.download = `${design.title}.zip`;
-                link.click();
-            }
-        }
+function updateSidebar() {
+  document.getElementById('sb-total').textContent = allDesigns.length;
+  document.getElementById('sb-downloads').textContent = allDesigns.reduce((s,d)=>s+(d.downloads||0),0);
+  const tagCounts = {};
+  allDesigns.flatMap(d=>d.tags||[]).forEach(t=>tagCounts[t]=(tagCounts[t]||0)+1);
+  const top = Object.entries(tagCounts).sort((a,b)=>b[1]-a[1]).slice(0,12).map(x=>x[0]);
+  document.getElementById('tag-cloud').innerHTML = top.map(t=>
+    `<span class="cloud-tag" onclick="setTagFilter('${t}')">${t}</span>`
+  ).join('');
+}
 
-        function closeDownloadModal() {
-            document.getElementById('downloadModal').classList.add('hidden');
-            document.getElementById('downloadModal').classList.remove('flex');
-        }
+window.filterDesigns = renderGrid;
+window.setFilter = (cat, btn) => {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+};
+window.setTagFilter = tag => {
+  document.getElementById('search-input').value = tag;
+  renderGrid();
+  window.scrollToGallery();
+};
 
-        function updateStats() {
-            document.getElementById('totalDesigns').textContent = allDesigns.length;
-            document.getElementById('totalDownloads').textContent = allDesigns.reduce((sum, d) => sum + (d.downloads || 0), 0);
-        }
+// ══ MODAL ══
+window.openModal = id => {
+  const d = allDesigns.find(x=>x.id===id);
+  if (!d) return;
+  currentDesign = d;
+  document.getElementById('modal-img-wrap').innerHTML = d.imageUrl
+    ? `<img src="${d.imageUrl}" alt="${d.title}">`
+    : `<div class="no-img">${EMOJIS[d.category]||'🎨'}</div>`;
+  document.getElementById('modal-title').textContent = d.title;
+  document.getElementById('modal-desc').textContent = d.desc || 'No description provided.';
+  document.getElementById('modal-meta').textContent = `${d.downloads||0} downloads`;
+  document.getElementById('modal-tags').innerHTML = (d.tags||[]).map(t=>`<span class="card-tag">${t}</span>`).join('');
+  document.getElementById('modal-overlay').classList.add('open');
+};
+window.closeModal = e => { if(e.target===document.getElementById('modal-overlay')) closeModalDirect(); };
+window.closeModalDirect = () => document.getElementById('modal-overlay').classList.remove('open');
 
-        function renderTags() {
-            const allTags = allDesigns.flatMap(d => d.tags || []);
-            const tagCounts = allTags.reduce((acc, tag) => { acc[tag] = (acc[tag] || 0) + 1; return acc; }, {});
-            const sortedTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
-            document.getElementById('tagsContainer').innerHTML = sortedTags.length ? sortedTags.map(([tag]) => `<button onclick="searchByTag('${tag}')" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 rounded-full text-xs text-stone-700 transition-colors">${tag}</button>`).join('') : '<div class="text-sm text-stone-500">No tags yet</div>';
-        }
+window.downloadDesign = async () => {
+  if (!currentDesign) return;
+  try {
+    await updateDoc(doc(db,'designs',currentDesign.id), { downloads: increment(1) });
+    const local = allDesigns.find(x=>x.id===currentDesign.id);
+    if (local) local.downloads = (local.downloads||0)+1;
+    updateSidebar();
+  } catch(e) { console.warn('count update failed', e); }
+  if (currentDesign.fileUrl) {
+    showToast('Preparing download…');
+    try {
+      const response = await fetch(currentDesign.fileUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = currentDesign.fileName || currentDesign.title || 'design';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+      showToast('Download started! ✓');
+    } catch(err) {
+      console.error('Download error:', err);
+      showToast('Download failed. Try right-clicking and Save As.');
+    }
+  } else {
+    showToast('No file attached to this design.');
+  }
+  closeModalDirect();
+  renderGrid();
+};
 
-        function searchByTag(tag) { document.getElementById('searchInput').value = tag; searchDesigns(); }
-        function extractTitle(publicId) { return publicId.split('/').pop().replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); }
-        function extractCategory(publicId) { const match = publicId.match(/designs\/(\w+)/); return match ? match[1] : 'Other'; }
-        function extractTags(tags) { return tags || []; }
-        function scrollToGallery() { document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' }); }
+// ══ ADMIN ══
+window.switchAdminTab = (tab, btn) => {
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-upload').style.display = tab==='upload' ? 'block' : 'none';
+  document.getElementById('tab-manage').style.display = tab==='manage' ? 'block' : 'none';
+  if (tab==='manage') renderManage();
+};
 
-        // --- ADMIN FUNCTIONS ---
-        function checkAdminSession() { if (sessionStorage.getItem('admin') === 'true') { isAdmin = true; } }
-        function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); document.getElementById('loginModal').classList.add('flex'); }
-        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); document.getElementById('loginModal').classList.remove('flex'); document.getElementById('loginError').classList.add('hidden'); }
-        
-        function handleLogin(e) {
-            e.preventDefault();
-            if (document.getElementById('username').value === ADMIN_USERNAME && document.getElementById('password').value === ADMIN_PASSWORD) {
-                isAdmin = true;
-                sessionStorage.setItem('admin', 'true');
-                closeLoginModal();
-                showAdminPanel();
-            } else {
-                document.getElementById('loginError').classList.remove('hidden');
-            }
-        }
+window.previewImage = input => {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('preview-thumb');
+    img.src = e.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+};
 
-        function showAdminPanel() {
-            document.getElementById('adminPanel').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            updateAdminStats();
-            renderAdminTable();
-        }
+function setProgress(pct) { document.getElementById('progress-bar').style.width = pct + '%'; }
+function setStatus(msg) { document.getElementById('upload-status').textContent = msg; }
 
-        function closeAdminPanel() {
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
+window.uploadDesign = async () => {
+  const title = document.getElementById('f-title').value.trim();
+  const cat = document.getElementById('f-cat').value;
+  const desc = document.getElementById('f-desc').value.trim();
+  const tags = document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const imgFile = document.getElementById('img-input').files[0];
+  const dlFile = document.getElementById('f-file').files[0];
 
-        function logoutAdmin() {
-            isAdmin = false;
-            sessionStorage.removeItem('admin');
-            closeAdminPanel();
-        }
+  if (!title) { showToast('Please enter a title.'); return; }
+  if (!imgFile) { showToast('Please select a preview image.'); return; }
+  if (!dlFile) { showToast('Please select a download file.'); return; }
 
-        function switchAdminTab(tab) {
-            const uploadSection = document.getElementById('uploadSection');
-            const manageSection = document.getElementById('manageSection');
-            const tabUpload = document.getElementById('tabUpload');
-            const tabManage = document.getElementById('tabManage');
+  const btn = document.getElementById('btn-publish');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+  document.getElementById('progress-wrap').style.display = 'block';
 
-            if (tab === 'upload') {
-                uploadSection.classList.remove('hidden'); manageSection.classList.add('hidden');
-                tabUpload.classList.add('border-stone-900', 'text-stone-900'); tabUpload.classList.remove('border-transparent', 'text-stone-500');
-                tabManage.classList.remove('border-stone-900', 'text-stone-900'); tabManage.classList.add('border-transparent', 'text-stone-500');
-            } else {
-                uploadSection.classList.add('hidden'); manageSection.classList.remove('hidden');
-                tabManage.classList.add('border-stone-900', 'text-stone-900'); tabManage.classList.remove('border-transparent', 'text-stone-500');
-                tabUpload.classList.remove('border-stone-900', 'text-stone-900'); tabUpload.classList.add('border-transparent', 'text-stone-500');
-                renderAdminTable();
-            }
-        }
+  try {
+    setStatus('Uploading preview image to Cloudinary…');
+    const imgRes = await cloudinaryUpload(imgFile, 'designdrop/previews', p => setProgress(p * 50));
+    const imageUrl = imgRes.secure_url;
+    const imagePublicId = imgRes.public_id;
 
-        function updateAdminStats() {
-            document.getElementById('adminTotalDesigns').textContent = allDesigns.length;
-            document.getElementById('adminTotalDownloads').textContent = allDesigns.reduce((sum, d) => sum + (d.downloads || 0), 0);
-        }
+    setStatus('Uploading design file to Cloudinary…');
+    const fileRes = await cloudinaryUpload(dlFile, 'designdrop/files', p => setProgress(50 + p * 45));
+    const fileUrl = fileRes.secure_url;
+    const filePublicId = fileRes.public_id;
 
-        async function uploadToCloudinary(file, isImage = true) {
-            if (CLOUDINARY_CLOUD_NAME === 'YOUR_CLOUD_NAME') {
-                alert('Please configure Cloudinary credentials first!');
-                throw new Error('Cloudinary not configured');
-            }
-            
-            const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${isImage ? 'image' : 'raw'}/upload`;
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-            const response = await fetch(url, { method: 'POST', body: formData });
-            const data = await response.json();
-            return data.secure_url;
-        }
+    setStatus('Saving to database…');
+    setProgress(98);
 
-        async function handleUpload(e) {
-            e.preventDefault();
-            const btn = document.getElementById('publishBtn');
-            btn.innerHTML = 'Uploading... <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-            btn.disabled = true;
+    await addDoc(collection(db, 'designs'), {
+      title, category: cat, desc, tags,
+      imageUrl, imagePublicId,
+      fileUrl, filePublicId,
+      fileName: dlFile.name,
+      downloads: 0,
+      createdAt: new Date().toISOString(),
+      date: new Date().toLocaleDateString()
+    });
 
-            try {
-                const previewFile = document.getElementById('previewImage').files[0];
-                const downloadFile = document.getElementById('downloadFile').files[0];
-                
-                const previewUrl = await uploadToCloudinary(previewFile, true);
-                const downloadUrl = await uploadToCloudinary(downloadFile, false);
+    setProgress(100);
+    setStatus('✓ Published successfully!');
+    showToast('Design published! ✓');
+    resetForm();
+    await loadDesigns();
+    refreshAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('Upload failed: ' + e.message);
+    setStatus('❌ Upload failed. See console for details.');
+    btn.disabled = false;
+    btn.textContent = 'Publish Design ↗';
+  }
+};
 
-                const newDesign = {
-                    id: 'design_' + Date.now(),
-                    url: previewUrl,
-                    downloadUrl: downloadUrl,
-                    title: document.getElementById('designTitle').value,
-                    category: document.getElementById('designCategory').value,
-                    description: document.getElementById('designDescription').value,
-                    tags: document.getElementById('designTags').value.split(',').map(t => t.trim()).filter(t => t),
-                    downloads: 0,
-                    date: new Date()
-                };
+function resetForm() {
+  ['f-title','f-desc','f-tags'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('img-input').value = '';
+  document.getElementById('f-file').value = '';
+  document.getElementById('preview-thumb').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('upload-status').textContent = '';
+  const btn = document.getElementById('btn-publish');
+  btn.disabled = false;
+  btn.textContent = 'Publish Design ↗';
+}
 
-                allDesigns.unshift(newDesign);
-                filteredDesigns = [...allDesigns];
-                currentPage = 1;
-                saveToLocalStorage();
-                
-                updateStats();
-                updateAdminStats();
-                renderDesigns();
-                renderPagination();
-                renderTags();
-                renderAdminTable();
-                
-                alert('Design published successfully!');
-                e.target.reset();
-                document.getElementById('previewThumb').classList.add('hidden');
-            } catch (error) {
-                console.error(error);
-                alert('Error uploading design. Check console for details.');
-            } finally {
-                btn.innerHTML = 'Publish Design <span>↗</span>';
-                btn.disabled = false;
-            }
-        }
+window.deleteDesign = async id => {
+  if (!confirm('Delete this design permanently?')) return;
+  try {
+    await deleteDoc(doc(db,'designs',id));
+    allDesigns = allDesigns.filter(d=>d.id!==id);
+    renderManage();
+    renderGrid();
+    updateSidebar();
+    refreshAdmin();
+    showToast('Design deleted.');
+  } catch(e) { showToast('Delete failed: ' + e.message); }
+};
 
-        function renderAdminTable() {
-            const tbody = document.getElementById('adminDesignsTable');
-            if (allDesigns.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-stone-500">No designs uploaded yet.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = allDesigns.map(design => `
-                <tr class="hover:bg-stone-50">
-                    <td class="px-6 py-4"><img src="${design.url}" class="w-12 h-12 rounded object-cover"></td>
-                    <td class="px-6 py-4 font-medium text-stone-900">${design.title}</td>
-                    <td class="px-6 py-4 text-sm text-stone-600">${design.category}</td>
-                    <td class="px-6 py-4 text-sm text-stone-600">${design.downloads || 0}</td>
-                    <td class="px-6 py-4 text-sm text-stone-500">${new Date(design.date).toLocaleDateString()}</td>
-                    <td class="px-6 py-4"><button onclick="deleteDesign('${design.id}')" class="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button></td>
-                </tr>
-            `).join('');
-        }
+function renderManage() {
+  const tbody = document.getElementById('manage-tbody');
+  if (!allDesigns.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No designs yet. Upload your first one!</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = allDesigns.map(d => `
+    <tr>
+      <td>${d.imageUrl ? `<img class="thumb-sm" src="${d.imageUrl}" alt="">` : `<div class="thumb-sm-box">${EMOJIS[d.category]||'🎨'}</div>`}</td>
+      <td style="font-weight:500">${d.title}</td>
+      <td><span class="card-tag">${d.category}</span></td>
+      <td>${d.downloads||0}</td>
+      <td style="color:var(--text-muted)">${d.date||''}</td>
+      <td><button class="btn-danger" onclick="deleteDesign('${d.id}')">Delete</button></td>
+    </tr>
+  `).join('');
+}
 
-        function deleteDesign(id) {
-            if (!confirm('Are you sure you want to delete this design?')) return;
-            allDesigns = allDesigns.filter(d => d.id !== id);
-            filteredDesigns = filteredDesigns.filter(d => d.id !== id);
-            saveToLocalStorage();
-            updateStats();
-            updateAdminStats();
-            renderDesigns();
-            renderPagination();
-            renderAdminTable();
-        }
+async function refreshAdmin() {
+  document.getElementById('adm-total').textContent = allDesigns.length;
+  document.getElementById('adm-dls').textContent = allDesigns.reduce((s,d)=>s+(d.downloads||0),0);
+}
 
-        function saveToLocalStorage() {
-            localStorage.setItem('designdrop_designs', JSON.stringify(allDesigns));
-        }
+window.showToast = msg => {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+};
 
-        // Preview image thumbnail
-        document.getElementById('previewImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const thumb = document.getElementById('previewThumb');
-                    thumb.src = event.target.result;
-                    thumb.classList.remove('hidden');
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
+// ══ INIT ══
+// Secret admin URL: add ?admin to the URL to open login
+if (window.location.search.includes('admin')) {
+  showView('view-login');
+} else {
+  loadDesigns();
+}
+</script>
+<!-- Monetag Ad Code -->
+<script>(function(s){s.dataset.zone='11161853',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 </body>
 </html>
