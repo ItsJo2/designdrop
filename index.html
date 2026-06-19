@@ -166,10 +166,10 @@
   .page-info { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 0.75rem; }
 
   /* FULL WIDTH LAYOUT WITH LEFT/RIGHT ADS */
-  .outer-layout { display: grid; grid-template-columns: 130px 1fr 130px; gap: 1rem; max-width: 1460px; margin: 0 auto; padding: 0 1rem; }
+  .outer-layout { display: grid; grid-template-columns: 260px 1fr 260px; gap: 1rem; max-width: 1600px; margin: 0 auto; padding: 0 1rem; }
   .left-ads { padding-top: 1rem; display: flex; flex-direction: column; gap: 1rem; }
   .right-ads { padding-top: 1rem; display: flex; flex-direction: column; gap: 1rem; }
-  .ad-side { width: 120px; background: var(--ad-bg); border: 1px dashed var(--border-strong); border-radius: 8px; overflow: hidden; }
+  .ad-side { width: 250px; background: var(--ad-bg); border: 1px dashed var(--border-strong); border-radius: 8px; overflow: hidden; }
   .ad-side-tall { height: 600px; }
   .ad-side-med { height: 250px; }
 
@@ -182,7 +182,7 @@
   /* BETWEEN-GRID AD */
   .mid-ad { grid-column: 1/-1; text-align: center; margin: 1rem 0; }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 1300px) {
     .outer-layout { grid-template-columns: 1fr; }
     .left-ads, .right-ads { display: none; }
   }
@@ -207,6 +207,11 @@
     </div>
   </nav>
 
+  <!-- TOP-OF-PAGE BANNER 728x90 -->
+  <div style="text-align:center;padding:1rem 1rem 0;">
+    <script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="230109"></script>
+  </div>
+
   <section class="hero">
     <h1>Free graphics &amp;<br><em>illustrations</em> for everyone</h1>
     <p>Download high-quality design assets at no cost — forever free.</p>
@@ -228,12 +233,12 @@
     <div class="left-ads">
       <!-- Affiliate Ad 1 - replace href and src with your own -->
       <a class="affiliate-ad" href="YOUR_AFFILIATE_LINK_1" target="_blank" rel="noopener">
-        <img src="https://placehold.co/120x240/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
+        <img src="https://placehold.co/250x250/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
         <div class="affiliate-ad-label">Sponsored</div>
       </a>
       <!-- Affiliate Ad 2 -->
       <a class="affiliate-ad" href="YOUR_AFFILIATE_LINK_2" target="_blank" rel="noopener">
-        <img src="https://placehold.co/120x240/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
+        <img src="https://placehold.co/250x250/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
         <div class="affiliate-ad-label">Sponsored</div>
       </a>
       <!-- Onclicka left -->
@@ -252,6 +257,7 @@
               <button class="filter-btn" onclick="setFilter('Anime',this)">Anime</button>
               <button class="filter-btn" onclick="setFilter('Typography',this)">Typography</button>
               <button class="filter-btn" onclick="setFilter('Streetwear',this)">Streetwear</button>
+              <button class="filter-btn" onclick="setFilter('Cute',this)">Cute</button>
             </div>
             <div id="design-grid" class="design-grid"></div>
             <div id="loading-state" class="loading-state"><div class="spinner"></div><br>Loading designs…</div>
@@ -269,7 +275,7 @@
               <div class="sidebar-title">Stats</div>
               <div class="stat-row"><span>Total designs</span><span id="sb-total">—</span></div>
               <div class="stat-row"><span>Downloads</span><span id="sb-downloads">—</span></div>
-              <div class="stat-row"><span>Categories</span><span>4</span></div>
+              <div class="stat-row"><span>Categories</span><span>5</span></div>
             </div>
             <div class="sidebar-section">
               <div class="sidebar-title">Popular tags</div>
@@ -312,12 +318,12 @@
     <div class="right-ads">
       <!-- Affiliate Ad right 1 -->
       <a class="affiliate-ad" href="YOUR_AFFILIATE_LINK_7" target="_blank" rel="noopener">
-        <img src="https://placehold.co/120x240/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
+        <img src="https://placehold.co/250x250/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
         <div class="affiliate-ad-label">Sponsored</div>
       </a>
       <!-- Affiliate Ad right 2 -->
       <a class="affiliate-ad" href="YOUR_AFFILIATE_LINK_8" target="_blank" rel="noopener">
-        <img src="https://placehold.co/120x240/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
+        <img src="https://placehold.co/250x250/1A1916/FFFFFF?text=Your+Ad+Here" alt="Sponsored">
         <div class="affiliate-ad-label">Sponsored</div>
       </a>
       <!-- Onclicka right -->
@@ -407,6 +413,7 @@
               <option value="Anime">Anime</option>
               <option value="Typography">Typography</option>
               <option value="Streetwear">Streetwear</option>
+              <option value="Cute">Cute</option>
             </select>
           </div>
           <div class="form-group full">
@@ -465,7 +472,7 @@ const app = initializeApp({
 });
 const db = getFirestore(app);
 
-const EMOJIS = { illustration:'🎨', graphic:'✏️', icon:'⚡', abstract:'🌀' };
+const EMOJIS = { Cars:'🚗', Anime:'🎌', Typography:'✍️', Streetwear:'👕', Cute:'🌸' };
 let allDesigns = [];
 let currentDesign = null;
 let currentFilter = 'all';
